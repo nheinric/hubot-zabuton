@@ -10,6 +10,15 @@
     "hubot-scripts"
   ],
 
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nheinric/hubot-zabuton.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/nheinric/hubot-zabuton/issues"
+  },
+
   "dependencies": {
     "coffee-script": "~1.6"
   },
