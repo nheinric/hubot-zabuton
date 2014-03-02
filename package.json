@@ -1,0 +1,29 @@
+{
+  "name": "hubot-zabuton",
+  "description": "Manage zabuton for Hubot users",
+  "version": "0.0.1",
+  "author": "Nathaniel Heinrichs <nheinric@cpan.org>",
+  "license": "MIT",
+
+  "keywords": [
+    "hubot",
+    "hubot-scripts"
+  ],
+
+  "dependencies": {
+    "coffee-script": "~1.6"
+  },
+
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
+  },
+
+  "main": "index.coffee",
+
+  "scripts": {
+    "test": "script/test"
+  }
+}
