@@ -103,8 +103,10 @@ module.exports = (robot) ->
 
         msg.send username + ' Has ' + points[username] + ' Zabuton'
 
-    robot.respond /(.+)に(?:座布団|ざぶとん|ザブトン)(\d+)枚/, (msg) ->
-        award_points(msg, 'ja', msg.match[1], msg.match[2])
+    # Only capturing '枚' to make tests for increment/decrement similar
+    robot.respond /(.+)に(?:座布団|ざぶとん|ザブトン)(\d+枚)/, (msg) ->
+        pts = msg.match[2].match(/^(\d+)枚/)
+        award_points(msg, 'ja', msg.match[1], pts[1])
         save(robot)
 
     robot.respond /(.+)(?:から|の)(?:座布団|ざぶとん|ザブトン)(.*)/, (msg) ->
@@ -112,8 +114,10 @@ module.exports = (robot) ->
         pts      = msg.match[2]
         if match = pts.match(/^(\d+)枚/)
             decrement_points( msg, 'en', username, match[1] )
-        else
+        else if match = pts.match(/^全部/)
             decrement_points( msg, 'ja', username, 'all' )
+        else
+            return false
         save(robot)
 
     robot.respond /(.+?)(?:(?:[、　 ]*)?(?:寒い|さむい|サムイ|さみー))/, (msg) ->
