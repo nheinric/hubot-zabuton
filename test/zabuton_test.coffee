@@ -19,7 +19,16 @@ matchFunc = ( val ) ->
   return allMatched
 regexpMatcher = sinon.match( matchFunc )
 
-# todo Test point increment/decrement
+# Walk the list of calls to find one matching strToMatch and expectedMatches
+findCall = ( sinonSpy, matches ) ->
+  expectedMatches = matches
+  i               = 0
+  call            = null
+  while call = sinonSpy.getCall(i)
+    break if call.calledWith( sinon.match(regexpMatcher) )
+    i++
+  return call
+
 # todo Test responses
 describe 'hubot-zabuton', ->
   beforeEach ->
@@ -184,3 +193,61 @@ describe 'hubot-zabuton', ->
   it 'responds to /(.+)はザブトン何枚/', ->
     expectedMatches = [ 'bobはザブトン何枚', 'bob' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
+
+  # I had two choices: mock out several Robot-related objects, or lookup and call the callback directly
+  # Neither is particularly elegant, but the latter works
+  it 'increments correctly', ->
+    matches = [ 'bobに座布団1枚', 'bob', '1枚' ]
+    call    = findCall( @robot.respond, matches )
+    expect(call).to.not.equal(null)
+
+    # Call the callback with the test message
+    # todo Need to know too much about the underlying code, here...
+    msgObj =
+      send: (str) -> return true
+      match: matches
+    call.args[1]( msgObj )
+
+    expect(@robot.brain.data.zabuton).to.deep.equal({ bob: 1 })
+
+  it 'decrements by specific value correctly', ->
+    @robot.brain.data.zabuton = { bob: 1 }
+
+    matches = [ 'bobから座布団1枚', 'bob', '1枚' ]
+    call    = findCall( @robot.respond, matches )
+    expect(call).to.not.equal(null)
+
+    msgObj =
+      send: (str) -> return true
+      match: matches
+    call.args[1]( msgObj )
+
+    expect(@robot.brain.data.zabuton).to.deep.equal({ bob: 0 })
+
+  it 'decrements colloquially', ->
+    @robot.brain.data.zabuton = { bob: 1 }
+
+    matches = [ 'bob寒い', 'bob' ]
+    call    = findCall( @robot.respond, matches )
+    expect(call).to.not.equal(null)
+
+    msgObj =
+      send: (str) -> return true
+      match: matches
+    call.args[1]( msgObj )
+
+    expect(@robot.brain.data.zabuton).to.deep.equal({ bob: 0 })
+
+  it 'decrements all correctly', ->
+    @robot.brain.data.zabuton = { bob: 100 }
+
+    matches = [ 'bobから座布団全部','bob', '全部' ]
+    call    = findCall( @robot.respond, matches )
+    expect(call).to.not.equal(null)
+
+    msgObj =
+      send: (str) -> return true
+      match: matches
+    call.args[1]( msgObj )
+
+    expect(@robot.brain.data.zabuton).to.deep.equal({ bob: 0 })
