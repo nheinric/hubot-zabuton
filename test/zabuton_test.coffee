@@ -71,62 +71,62 @@ describe 'hubot-zabuton', ->
 
   it 'responds to /(.+)から座布団全部/', ->
     strToMatch      = 'bobから座布団全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)からざぶとん全部/', ->
     strToMatch      = 'bobからざぶとん全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)からザブトン全部/', ->
     strToMatch      = 'bobからザブトン全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)の座布団全部/', ->
     strToMatch      = 'bobの座布団全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)のざぶとん全部/', ->
     strToMatch      = 'bobのざぶとん全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)のザブトン全部/', ->
     strToMatch      = 'bobのザブトン全部'
-    expectedMatches = [ 'bob' ]
+    expectedMatches = [ 'bob', '全部' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)から座布団(\d+)枚/', ->
     strToMatch      = 'bobから座布団1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)からざぶとん(\d+)枚/', ->
     strToMatch      = 'bobからざぶとん1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)からザブトン(\d+)枚/', ->
     strToMatch      = 'bobからザブトン1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)の座布団(\d+)枚/', ->
     strToMatch      = 'bobの座布団1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)のざぶとん(\d+)枚/', ->
     strToMatch      = 'bobのざぶとん1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)のザブトン(\d+)枚/', ->
     strToMatch      = 'bobのザブトン1枚'
-    expectedMatches = [ 'bob', '1' ]
+    expectedMatches = [ 'bob', '1枚' ]
     expect(@robot.respond).to.have.been.calledWith( sinon.match(regexpMatcher) )
 
   it 'responds to /(.+)寒い/', ->
