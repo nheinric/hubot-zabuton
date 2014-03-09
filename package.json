@@ -1,7 +1,7 @@
 {
   "name": "hubot-zabuton",
   "description": "Manage zabuton for Hubot users",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Nathaniel Heinrichs <nheinric@cpan.org>",
   "license": "MIT",
 
