@@ -25,15 +25,14 @@
 #   hubot give <number> zabuton to <username> - award <number> zabuton to <username>
 #   hubot give <username> <number> zabuton - award <number> zabuton to <username>
 #   hubot take <number> zabuton from <username> - take away <number> zabuton from <username>
-#   hubot how many zabuton does <username> have? - list how many zabuton <username> has
 #   hubot take all zabuton from <username> - removes all zabuton from <username>
+#   hubot how many zabuton does <username> have? - list how many zabuton <username> has
 #
-#   # 座布団 =~ (座布団|ざぶとん|ザブトン)
 #   hubot <username>に座布団<number>枚 - award <number> zabuton to <username>
-#   hubot <username>(から|の)座布団<number>枚 - take away <number> zabuton from <username>
+#   hubot <username>から座布団<number>枚取って - take away <number> zabuton from <username>
+#   hubot <username>の座布団全部取って - removes all zabuton from <username>
 #   hubot <username>(、|\s)?(寒い|さむい|サムイ|さみー) - take away 1 zabuton from <username>
-#   hubot <username>は?座布団何枚 - list how many zabuton <username> has
-#   hubot <username>(から|の)座布団全部 - removes all zabuton from <username>
+#   hubot <username>は座布団何枚? - list how many zabuton <username> has
 #
 # Author:
 #   Nathaniel Heinrichs <nheinric at cpan.org>
@@ -55,7 +54,7 @@ decrement_points = (msg, lang, username, pts) ->
 
     if points[username] is 0
       if lang is 'ja'
-        msg.send username + 'じゃ座布団1枚も無い!'
+        msg.send username + 'は座布団1枚も無い!'
       else
         msg.send username + ' Does Not Have Any Zabuton To Take Away'
     else
@@ -126,8 +125,8 @@ module.exports = (robot) ->
         save(robot)
 
     # Last 'は' in a name like "なはは" will be swallowed.
-    robot.respond /(.+?)は?(?:座布団|ざぶとん|ザブトン)何枚/, (msg) ->
+    robot.respond /(.+?)は(?:座布団|ざぶとん|ザブトン)何枚?/, (msg) ->
         username = msg.match[1]
         points[username] ?= 0
 
-        msg.send username + 'じゃ座布団' + points[username] + '枚持っとる'
+        msg.send username + 'は座布団' + points[username] + '枚持っとる'
