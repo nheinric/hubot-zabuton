@@ -109,15 +109,15 @@ module.exports = (robot) ->
         award_points(msg, 'ja', username, pts[1])
         save(robot)
 
-    robot.respond /(.+)(?:から|の)(?:座布団|ざぶとん|ザブトン)(.*)/, (msg) ->
+    robot.respond /(.+)から(?:座布団|ざぶとん|ザブトン)(\d+枚)取って/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        pts      = msg.match[2]
-        if match = pts.match(/^(\d+)枚/)
-            decrement_points( msg, 'ja', username, match[1] )
-        else if match = pts.match(/^全部/)
-            decrement_points( msg, 'ja', username, 'all' )
-        else
-            return false
+        pts = msg.match[2].match(/^(\d+)枚/)
+        decrement_points(msg, 'ja', username, pts[1])
+        save(robot)
+
+    robot.respond /(.+)の(?:座布団|ざぶとん|ザブトン)全部取って/, (msg) ->
+        username = msg.match[1].replace /^\s+|\s+$/g, ""
+        decrement_points( msg, 'ja', username, 'all' )
         save(robot)
 
     robot.respond /(.+?)(?:(?:[、　 ]*)?(?:寒い|さむい|サムイ|さみー))/, (msg) ->
