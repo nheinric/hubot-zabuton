@@ -28,11 +28,11 @@
 #   hubot take all zabuton from <username> - removes all zabuton from <username>
 #   hubot how many zabuton does <username> have? - list how many zabuton <username> has
 #
-#   hubot <username>に座布団<number>枚 - award <number> zabuton to <username>
-#   hubot <username>から座布団<number>枚取って - take away <number> zabuton from <username>
-#   hubot <username>の座布団全部取って - removes all zabuton from <username>
-#   hubot <username>(、|\s)?(寒い|さむい|サムイ|さみー) - take away 1 zabuton from <username>
-#   hubot <username>は座布団何枚? - list how many zabuton <username> has
+#   hubot <username> に座布団<number>枚 - award <number> zabuton to <username>
+#   hubot <username> から座布団<number>枚取って - take away <number> zabuton from <username>
+#   hubot <username> の座布団全部取って - removes all zabuton from <username>
+#   hubot <username> (、|\s)?(寒い|さむい|サムイ|さみー) - take away 1 zabuton from <username>
+#   hubot <username> は座布団何枚? - list how many zabuton <username> has
 #
 # Author:
 #   Nathaniel Heinrichs <nheinric at cpan.org>
@@ -104,12 +104,13 @@ module.exports = (robot) ->
 
     # Only capturing '枚' to make tests for increment/decrement similar
     robot.respond /(.+)に(?:座布団|ざぶとん|ザブトン)(\d+枚)/, (msg) ->
+        username = msg.match[1].replace /^\s+|\s+$/g, ""
         pts = msg.match[2].match(/^(\d+)枚/)
-        award_points(msg, 'ja', msg.match[1], pts[1])
+        award_points(msg, 'ja', username, pts[1])
         save(robot)
 
     robot.respond /(.+)(?:から|の)(?:座布団|ざぶとん|ザブトン)(.*)/, (msg) ->
-        username = msg.match[1]
+        username = msg.match[1].replace /^\s+|\s+$/g, ""
         pts      = msg.match[2]
         if match = pts.match(/^(\d+)枚/)
             decrement_points( msg, 'ja', username, match[1] )
@@ -120,13 +121,13 @@ module.exports = (robot) ->
         save(robot)
 
     robot.respond /(.+?)(?:(?:[、　 ]*)?(?:寒い|さむい|サムイ|さみー))/, (msg) ->
-        username = msg.match[1]
+        username = msg.match[1].replace /^\s+|\s+$/g, ""
         decrement_points( msg, 'ja', username, 1 )
         save(robot)
 
     # Last 'は' in a name like "なはは" will be swallowed.
     robot.respond /(.+?)は(?:座布団|ざぶとん|ザブトン)何枚?/, (msg) ->
-        username = msg.match[1]
+        username = msg.match[1].replace /^\s+|\s+$/g, ""
         points[username] ?= 0
 
         msg.send username + 'は座布団' + points[username] + '枚持っとる'
