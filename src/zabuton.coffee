@@ -40,35 +40,37 @@
 
 points = {}
 
-award_points = (msg, lang, username, pts) ->
-    points[username] ?= 0
-    points[username] += parseInt(pts)
+award_points = (msg, lang, username, zabuton, pts) ->
+    points[username] ?= {}
+    points[username][zabuton] ?= 0
+    points[username][zabuton] += parseInt(pts)
     if lang is 'ja'
-      msg.send username + 'に座布団' + pts + '枚やった'
+      msg.send username + ' に ' + zabuton + ' ' + pts + ' 枚やった'
     else
-      msg.send pts + ' Awarded To ' + username
+      msg.send pts + ' ' + zabuton + ' Awarded To ' + username
 
-decrement_points = (msg, lang, username, pts) ->
-    points[username] ?= 0
-    pts = points[username] if pts is 'all'
+decrement_points = (msg, lang, username, zabuton, pts) ->
+    points[username] ?= {}
+    points[username][zabuton] ?= 0
+    pts = points[username][zabuton] if pts is 'all'
 
-    if points[username] is 0
+    if points[username][zabuton] is 0
       if lang is 'ja'
-        msg.send username + 'は座布団1枚も無い!'
+        msg.send username + ' は ' + zabuton + ' 1 枚も無い!'
       else
-        msg.send username + ' Does Not Have Any Zabuton To Take Away'
+        msg.send username + ' Does Not Have Any ' + zabuton + ' To Take Away'
     else
-      points[username] -= parseInt(pts)
+      points[username][zabuton] -= parseInt(pts)
       if lang is 'ja'
-        if points[username] is 0
-          msg.send username + 'よ、何しとってん?!'
+        if points[username][zabuton] is 0
+          msg.send username + ' よ、何しとってん?!'
         else
-          msg.send username + 'から座布団' + pts + '枚取っといた'
+          msg.send username + ' から ' + zabuton + ' ' + pts + ' 枚取っといた'
       else
-        if points[username] is 0
+        if points[username][zabuton] is 0
           msg.send username + ' WHAT DID YOU DO?!'
         else
-          msg.send pts + ' Zabuton Taken Away From ' + username
+          msg.send pts + ' ' + zabuton + ' Taken Away From ' + username
 
 save = (robot) ->
     robot.brain.data.zabuton = points
@@ -77,57 +79,61 @@ module.exports = (robot) ->
     robot.brain.on 'loaded', ->
         points = robot.brain.data.zabuton or {}
 
-    robot.respond /give (\d+) zabuton to (.*?)\s?$/i, (msg) ->
-        award_points(msg, 'en', msg.match[2], msg.match[1])
+    robot.respond /give (\d+) (.*?) to (.*?)\s?$/i, (msg) ->
+        award_points(msg, 'en', msg.match[3], msg.match[2], msg.match[1])
         save(robot)
 
-    robot.respond /give (.*?) (\d+) zabuton/i, (msg) ->
-        award_points(msg, 'en', msg.match[1], msg.match[2])
+    robot.respond /give (.*?) (\d+) (.*?)\s?$/i, (msg) ->
+        award_points(msg, 'en', msg.match[1], msg.match[3], msg.match[2])
         save(robot)
 
-    robot.respond /take all zabuton from (.*?)\s?$/i, (msg) ->
-        username = msg.match[1]
-        decrement_points( msg, 'en', username, 'all' )
+    robot.respond /take all (.*?) from (.*?)\s?$/i, (msg) ->
+        decrement_points(msg, 'en', msg.match[2], msg.match[1], 'all')
         save(robot)
 
-    robot.respond /take (\d+) zabuton from (.*?)\s?$/i, (msg) ->
-        pts = msg.match[1]
+    robot.respond /take (\d+) (.*?) from (.*?)\s?$/i, (msg) ->
+        decrement_points(msg, 'en', msg.match[3], msg.match[2], msg.match[1])
+        save(robot)
+
+    robot.respond /how many (.*?) does (.*?) have\??/i, (msg) ->
         username = msg.match[2]
-        decrement_points( msg, 'en', username, pts )
-        save(robot)
+        zabuton = msg.match[1]
+        points[username] ?= {}
+        points[username][zabuton] ?= 0
 
-    robot.respond /how many zabuton does (.*?) have\??/i, (msg) ->
-        username = msg.match[1]
-        points[username] ?= 0
-
-        msg.send username + ' Has ' + points[username] + ' Zabuton'
+        msg.send username + ' Has ' + points[username][zabuton] + ' ' + zabuton
 
     # Only capturing '枚' to make tests for increment/decrement similar
-    robot.respond /(.+)に(?:座布団|ざぶとん|ザブトン)(\d+枚)/, (msg) ->
+    robot.respond /(.+)に(.+)(\d+枚)/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        pts = msg.match[2].match(/^(\d+)枚/)
-        award_points(msg, 'ja', username, pts[1])
+        zabuton = msg.match[2].replace /^\s+|\s+$/g, ""
+        pts = msg.match[3].match(/^(\d+)枚/)
+        award_points(msg, 'ja', username, zabuton, pts[1])
         save(robot)
 
-    robot.respond /(.+)から(?:座布団|ざぶとん|ザブトン)(\d+枚)取って/, (msg) ->
+    robot.respond /(.+)から(.+)(\d+枚取って)/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        pts = msg.match[2].match(/^(\d+)枚/)
-        decrement_points(msg, 'ja', username, pts[1])
+        zabuton = msg.match[2].replace /^\s+|\s+$/g, ""
+        pts = msg.match[3].match(/^(\d+)枚/)
+        decrement_points( msg, 'ja', username, zabuton, pts[1] )
         save(robot)
 
-    robot.respond /(.+)の(?:座布団|ざぶとん|ザブトン)全部取って/, (msg) ->
+    robot.respond /(.+)の(.+)全部取って/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        decrement_points( msg, 'ja', username, 'all' )
+        zabuton = msg.match[2].replace /^\s+|\s+$/g, ""
+        decrement_points( msg, 'ja', username, zabuton, 'all' )
         save(robot)
 
     robot.respond /(.+?)(?:(?:[、　 ]*)?(?:寒い|さむい|サムイ|さみー))/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        decrement_points( msg, 'ja', username, 1 )
+        decrement_points(msg, 'ja', username, '座布団', 1)
         save(robot)
 
     # Last 'は' in a name like "なはは" will be swallowed.
-    robot.respond /(.+?)は(?:座布団|ざぶとん|ザブトン)何枚?/, (msg) ->
+    robot.respond /(.+?)は(.+?)何枚?/, (msg) ->
         username = msg.match[1].replace /^\s+|\s+$/g, ""
-        points[username] ?= 0
+        zabuton = msg.match[2].replace /^\s+|\s+$/g, ""
+        points[username] ?= {}
+        points[username][zabuton] ?= 0
 
-        msg.send username + 'は座布団' + points[username] + '枚持っとる'
+        msg.send username + ' は ' + zabuton + ' ' + points[username][zabuton] + '枚持っとる'
