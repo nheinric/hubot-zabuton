@@ -113,7 +113,7 @@ module.exports = (robot) ->
         username = msg.match[1]
         pts      = msg.match[2]
         if match = pts.match(/^(\d+)枚/)
-            decrement_points( msg, 'en', username, match[1] )
+            decrement_points( msg, 'ja', username, match[1] )
         else if match = pts.match(/^全部/)
             decrement_points( msg, 'ja', username, 'all' )
         else
